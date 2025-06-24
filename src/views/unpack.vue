@@ -44,7 +44,7 @@ export default {
   name: 'unpack',
   data() {
     return {
-      bkvHex: '040130fc19040137000304013b000902015408017c112233445566070170312e302e31',
+      bkvHex: '04010110010a010200000000000000000801039150514005730a01043232342e322e30310301051f1601483839383630383432313032343831323232353737040201974d04020198090402019928',
       data: [],
       columns,
       schemaId: '',
@@ -76,7 +76,7 @@ export default {
       let bkv;
       try {
         let result = BKV.BKV.unpack(BKV.hexToBuffer(this.bkvHex));
-        console.log('parse result', result);
+        console.log('[parse] result', result);
         if (result.code !== 0) {
           this.$message.error(`parse bkv fail: code=${result.code}`)
           return;
@@ -92,7 +92,7 @@ export default {
       let items = bkv.items();
       for (let i in items) {
         let item = items[i];
-        console.log(item);
+        console.log('[parse] item:', item);
         let rawKey = item.key();
         let key = rawKey;
         if (!item.isStringKey()) {
@@ -103,7 +103,7 @@ export default {
 
         let value = BKV.bufferToHex(item.value()).toUpperCase();
         if (schemaItems) {
-          value = bkv.parse(rawKey, schemaItems)
+          value = bkv.parse(rawKey, schemaItems).toString()
           if (value && valueType !== 'string') {
             value = value + ` (${BKV.bufferToHex(item.value()).toUpperCase()})`
           }
@@ -119,7 +119,7 @@ export default {
           value: value,
         });
       }
-      console.log(this.data);
+      console.log('[parse] data:', this.data);
     },
     cut() {
       this.bkvHex = this.bkvHex.slice(this.cutStart, this.bkvHex.length - this.cutEnd);
